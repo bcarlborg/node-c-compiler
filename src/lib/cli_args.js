@@ -50,7 +50,6 @@ function extractCliArgsAndOptions(args) {
       option === '-S'
     )
   ) {
-    console.error(`cannot recognize option ${option}`)
     throw new Error(UNRECOGNIZED_OPTION_MESSAGE)
   }
 

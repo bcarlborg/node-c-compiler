@@ -1,8 +1,10 @@
 const { extractCliArgsAndOptions } = require('./lib/cli_args')
+const { readFileText } = require('./lib/file_utils')
 
-function main() {
+async function main() {
   const argAndOptions = extractCliArgsAndOptions(process.argv)
-  console.log(argAndOptions)
+  const fileText = await readFileText(argAndOptions.arg)
+  console.log('file text', fileText)
 }
 
 main()
