@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Directory of this executable
+SELF_DIR=$(dirname "$0")
+
+COMPILER_NODE_SCRIPT="${SELF_DIR}/src/index.js"
+
+node "${COMPILER_NODE_SCRIPT}" "$@"
