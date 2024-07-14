@@ -77,6 +77,7 @@ describe('processing cli args', () => {
       lexOption: false,
       parseOption: false,
       codegenOption: false,
+      assemblyOnlyOption: false,
       arg: 'path1',
     })
   })
@@ -87,6 +88,7 @@ describe('processing cli args', () => {
       lexOption: true,
       parseOption: false,
       codegenOption: false,
+      assemblyOnlyOption: false,
       arg: 'path1',
     })
   })
@@ -97,6 +99,7 @@ describe('processing cli args', () => {
       lexOption: false,
       parseOption: true,
       codegenOption: false,
+      assemblyOnlyOption: false,
       arg: 'path1',
     })
   })
@@ -107,6 +110,18 @@ describe('processing cli args', () => {
       lexOption: false,
       parseOption: false,
       codegenOption: true,
+      assemblyOnlyOption: false,
+      arg: 'path1',
+    })
+  })
+
+  test('returns the path and assembly only ption', () => {
+    const args = ['node', 'script_name', '-S', 'path1']
+    expect(extractCliArgsAndOptions(args)).toEqual({
+      lexOption: false,
+      parseOption: false,
+      codegenOption: false,
+      assemblyOnlyOption: true,
       arg: 'path1',
     })
   })

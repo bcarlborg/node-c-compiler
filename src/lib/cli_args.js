@@ -35,7 +35,7 @@ function extractCliArgsAndOptions(args) {
 
   // If the first arg looks like an option, shift it off the front
   // of the options array
-  const option = options_and_args[0].startsWith('--')
+  const option = options_and_args[0].startsWith('-')
     ? options_and_args.shift()
     : undefined
 
@@ -43,7 +43,12 @@ function extractCliArgsAndOptions(args) {
   // an error.
   if (
     option &&
-    !(option === '--lex' || option === '--parse' || option === '--codegen')
+    !(
+      option === '--lex' ||
+      option === '--parse' ||
+      option === '--codegen' ||
+      option === '-S'
+    )
   ) {
     console.error(`cannot recognize option ${option}`)
     throw new Error(UNRECOGNIZED_OPTION_MESSAGE)
@@ -55,7 +60,7 @@ function extractCliArgsAndOptions(args) {
 
   // At this point, we've already processed the one option if it was provided
   // so if there is another, that is an error
-  if (options_and_args[0].startsWith('--')) {
+  if (options_and_args[0].startsWith('-')) {
     throw new Error(ONLY_ONE_OPTION_ALLOWED)
   }
 
@@ -69,6 +74,7 @@ function extractCliArgsAndOptions(args) {
     lexOption: option === '--lex',
     parseOption: option === '--parse',
     codegenOption: option === '--codegen',
+    assemblyOnlyOption: option === '-S',
     arg: positionalArg,
   }
 }
