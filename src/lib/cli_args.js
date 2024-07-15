@@ -1,10 +1,5 @@
 const NO_ARGUMENTS_ERROR_MESSAGE =
   'SCRIPT ERROR: expected positional argument with path to file'
-const UNRECOGNIZED_OPTION_MESSAGE = 'SCRIPT ERROR: unrecognized option'
-const ONLY_ONE_OPTION_ALLOWED =
-  'SCRIPT ERROR: only one script option is allowed'
-const ONLY_ONE_POSITIONAL_ARGUMENT_ALLOWED =
-  'SCRIPT ERROR: only one positional argument is allowed'
 const EXPECTED_ARRAY_ARGS_MESSAGE =
   'internal error: expected argument args to be an array'
 
@@ -33,56 +28,91 @@ function extractCliArgsAndOptions(args) {
     throw new Error(NO_ARGUMENTS_ERROR_MESSAGE)
   }
 
-  // If the first arg looks like an option, shift it off the front
-  // of the options array
-  const option = options_and_args[0].startsWith('-')
-    ? options_and_args.shift()
-    : undefined
-
-  // if we found an option, but it is not one of the recognized options, throw
-  // an error.
-  if (
-    option &&
-    !(
-      option === '--lex' ||
-      option === '--parse' ||
-      option === '--codegen' ||
-      option === '-S'
-    )
-  ) {
-    throw new Error(UNRECOGNIZED_OPTION_MESSAGE)
+  const foundOptions = {
+    lexOption: false,
+    parseOption: false,
+    codegenOption: false,
+    assemblyOnlyOption: false,
+    debugOption: false,
   }
 
+  //
+  // shift off all options
+  //
+  while (options_and_args[0]?.startsWith('-')) {
+    const currentOption = options_and_args.shift()
+
+    switch (currentOption) {
+      case '--lex':
+        foundOptions.lexOption = true
+        break
+      case '--parse':
+        foundOptions.parseOption = true
+        break
+      case '--codegen':
+        foundOptions.codegenOption = true
+        break
+      case '-S':
+        foundOptions.assemblyOnlyOption = true
+        break
+      case '--debug':
+        foundOptions.debugOption = true
+        break
+    }
+  }
+
+  //
+  // Process options
+  //
+
+  const lexOption = foundOptions.lexOption
+
+  // parseOption is overridden by lex option
+  const parseOption = !foundOptions.lexOption && foundOptions.parseOption
+
+  // codegenOption overridden by lexOption and parseOption
+  const codegenOption =
+    !foundOptions.lexOption &&
+    !foundOptions.parseOption &&
+    foundOptions.codegenOption
+
+  // assembly only option is overridden by lexOption and parseOption
+  const assemblyOnlyOption =
+    !foundOptions.lexOption &&
+    !foundOptions.parseOption &&
+    !foundOptions.codegenOption &&
+    foundOptions.assemblyOnlyOption
+
+  const debugOption = foundOptions.debugOption
+
+  //
+  // Get positional arg
+  //
+
+  // if after shifting all the options off, there is nothing left
+  // then there are no arguments
   if (options_and_args.length === 0) {
     throw new Error(NO_ARGUMENTS_ERROR_MESSAGE)
   }
 
-  // At this point, we've already processed the one option if it was provided
-  // so if there is another, that is an error
-  if (options_and_args[0].startsWith('-')) {
-    throw new Error(ONLY_ONE_OPTION_ALLOWED)
-  }
-
-  if (options_and_args.length > 1) {
-    throw new Error(ONLY_ONE_POSITIONAL_ARGUMENT_ALLOWED)
-  }
-
   const positionalArg = options_and_args[0]
 
+  //
+  // return
+  //
+
   return {
-    lexOption: option === '--lex',
-    parseOption: option === '--parse',
-    codegenOption: option === '--codegen',
-    assemblyOnlyOption: option === '-S',
+    lexOption,
+    parseOption,
+    codegenOption,
+    assemblyOnlyOption,
+    debugOption,
     arg: positionalArg,
   }
 }
 
 module.exports = {
   extractCliArgsAndOptions,
-  NO_ARGUMENTS_ERROR_MESSAGE,
-  UNRECOGNIZED_OPTION_MESSAGE,
   EXPECTED_ARRAY_ARGS_MESSAGE,
-  ONLY_ONE_OPTION_ALLOWED,
-  ONLY_ONE_POSITIONAL_ARGUMENT_ALLOWED,
+  NO_ARGUMENTS_ERROR_MESSAGE,
 }
