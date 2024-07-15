@@ -5,8 +5,14 @@ export default [
   {
     files: ['**/*.js'],
     languageOptions: { sourceType: 'commonjs' },
-    env: { jest: true },
   },
-  { languageOptions: { globals: globals.browser } },
+  {
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        ...globals.jest,
+      },
+    },
+  },
   pluginJs.configs.recommended,
 ]
