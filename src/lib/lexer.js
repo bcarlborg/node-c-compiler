@@ -19,6 +19,7 @@ const TOKEN_TYPE = {
 }
 
 const UNRECOGNIZABLE_TOKEN_MESSAGE = 'error: unrecognizable token'
+const EXPECTED_TOKENS_MESSAGE = 'error: expected tokens'
 
 function lex(src) {
   const tokens = []
@@ -275,8 +276,28 @@ function lex(src) {
   return tokens
 }
 
+function tokensToString(tokens) {
+  if (!tokens) {
+    throw new Error(EXPECTED_TOKENS_MESSAGE)
+  }
+
+  const strings = tokens.map((token) => {
+    if (token.type === TOKEN_TYPE.IDENTIFIER) {
+      return `<type: ${token.type} name: ${token.name}>`
+    } else if (token.type === TOKEN_TYPE.CONSTANT) {
+      return `<type: ${token.type} constant: ${token.constant}>`
+    } else {
+      return `<type: ${token.type}>`
+    }
+  })
+
+  return strings.join(' ')
+}
+
 module.exports = {
   lex,
+  tokensToString,
   TOKEN_TYPE,
   UNRECOGNIZABLE_TOKEN_MESSAGE,
+  EXPECTED_TOKENS_MESSAGE,
 }
