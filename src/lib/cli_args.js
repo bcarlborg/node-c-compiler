@@ -22,9 +22,9 @@ function extractCliArgsAndOptions(args) {
 
   // The first two arguments are 'node' and the path to our script.
   // We slice them off to get to the actual arguments.
-  const options_and_args = args.slice(2)
+  const optionsAndArgs = args.slice(2)
 
-  if (!options_and_args.length) {
+  if (!optionsAndArgs.length) {
     throw new Error(NO_ARGUMENTS_ERROR_MESSAGE)
   }
 
@@ -39,8 +39,8 @@ function extractCliArgsAndOptions(args) {
   //
   // shift off all options
   //
-  while (options_and_args[0]?.startsWith('-')) {
-    const currentOption = options_and_args.shift()
+  while (optionsAndArgs[0]?.startsWith('-')) {
+    const currentOption = optionsAndArgs.shift()
 
     switch (currentOption) {
       case '--lex':
@@ -91,11 +91,11 @@ function extractCliArgsAndOptions(args) {
 
   // if after shifting all the options off, there is nothing left
   // then there are no arguments
-  if (options_and_args.length === 0) {
+  if (optionsAndArgs.length === 0) {
     throw new Error(NO_ARGUMENTS_ERROR_MESSAGE)
   }
 
-  const positionalArg = options_and_args[0]
+  const positionalArg = optionsAndArgs[0]
 
   //
   // return
