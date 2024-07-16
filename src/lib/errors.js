@@ -4,7 +4,7 @@ class FatalError extends Error {
   }
 }
 
-function logError(error) {
+function logErrorAndExit(error) {
   let isFatal = false
 
   if (error instanceof FatalError) {
@@ -14,11 +14,11 @@ function logError(error) {
     console.error('Unknown Error:', error)
   }
 
-  console.log(
+  console.error(
     '\nStack Trace: ==========================================================================',
   )
   console.error(error.stack)
-  console.log(
+  console.error(
     '=======================================================================================',
   )
 
@@ -29,5 +29,5 @@ function logError(error) {
 
 module.exports = {
   FatalError,
-  logError,
+  logErrorAndExit,
 }

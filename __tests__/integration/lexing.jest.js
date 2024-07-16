@@ -34,4 +34,18 @@ describe('lexing integration tests', () => {
         '<type: constant constant: 2> <type: semicolon> <type: close_brace>',
     )
   })
+
+  test('exits with non-zero code and errors for invalid tokens', async () => {
+    const command =
+      './compiler --lex ./__tests__/sample_c_files/invalid_tokens_main.c'
+
+    const { error, stdout, stderr } = await new Promise((resolve, _reject) => {
+      exec(command, (error, stdout, stderr) => {
+        resolve({ error, stdout, stderr })
+      })
+    })
+
+    expect(error.code > 0).toBe(true)
+    expect(stderr).toContain('Fatal Error: error: unrecognizable token')
+  })
 })
