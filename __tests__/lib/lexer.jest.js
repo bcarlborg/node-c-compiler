@@ -129,6 +129,57 @@ describe('lexer', () => {
       })
     })
 
+    describe('comments', () => {
+      test('a comment produces no tokens', () => {
+        const result = lex('// foobar baz bop')
+        expect(result).toEqual([])
+      })
+
+      test('regular parsing resumes after new line', () => {
+        const result = lex('// foobar baz bop\nint beau()')
+        expect(result).toEqual([
+          {
+            type: TOKEN_TYPE.INT,
+          },
+          {
+            type: TOKEN_TYPE.IDENTIFIER,
+            name: 'beau',
+          },
+          {
+            type: TOKEN_TYPE.OPEN_PAREN,
+          },
+          {
+            type: TOKEN_TYPE.CLOSE_PAREN,
+          },
+        ])
+      })
+
+      test('parses a line that ends in a comment', () => {
+        const result = lex('int beau()   // I am a comment\n{}')
+        expect(result).toEqual([
+          {
+            type: TOKEN_TYPE.INT,
+          },
+          {
+            type: TOKEN_TYPE.IDENTIFIER,
+            name: 'beau',
+          },
+          {
+            type: TOKEN_TYPE.OPEN_PAREN,
+          },
+          {
+            type: TOKEN_TYPE.CLOSE_PAREN,
+          },
+          {
+            type: TOKEN_TYPE.OPEN_BRACE,
+          },
+          {
+            type: TOKEN_TYPE.CLOSE_BRACE,
+          },
+        ])
+      })
+    })
+
     describe('constant numbers', () => {
       test('identifies simple integer constants', () => {
         const result = lex('9999')

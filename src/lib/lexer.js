@@ -58,9 +58,12 @@ function lex(src) {
     }
   }
 
+  /**
+   * Munch n characters. If n is 1, munches current.
+   */
   function munch(n) {
     if (!n) {
-      throw new FatalError('Munch Expects an index')
+      throw new FatalError('Munch Expects an integer')
     }
 
     const substring = src.slice(current_index, current_index + n)
@@ -191,6 +194,25 @@ function lex(src) {
     //
     if (isWhiteSpace(peekChar())) {
       munch(1)
+      continue
+    }
+
+    //
+    // Ignore from start of comment to end of string
+    //
+    if (peekChar() === '/' && peekChar(1) === '/') {
+      // consume //
+      munch(2)
+
+      let runner = 0
+      while (
+        peekChar(runner) !== '\n' &&
+        current_index + runner <= src.length
+      ) {
+        runner += 1
+      }
+
+      munch(runner)
       continue
     }
 
