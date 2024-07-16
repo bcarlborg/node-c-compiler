@@ -198,21 +198,39 @@ function lex(src) {
     }
 
     //
-    // Ignore from start of comment to end of string
+    // Ignore from start of comment to end of comment
+    //
+    if (peekChar() === '/' && peekChar(1) === '*') {
+      // consume /*
+      munch(2)
+
+      let runner = 0
+      while (
+        peekChar(runner) !== '*' &&
+        peekChar(runner + 1) !== '/' &&
+        current_index + runner + 1 <= src.length
+      ) {
+        runner += 1
+      }
+
+      console.log('testy', current_index, runner)
+      munch(runner + 2)
+      continue
+    }
+
+    //
+    // Ignore from start of comment to end of line
     //
     if (peekChar() === '/' && peekChar(1) === '/') {
       // consume //
       munch(2)
 
       let runner = 0
-      while (
-        peekChar(runner) !== '\n' &&
-        current_index + runner <= src.length
-      ) {
+      while (peekChar(runner) !== '\n' && current_index + runner < src.length) {
         runner += 1
       }
 
-      munch(runner)
+      munch(runner + 1)
       continue
     }
 

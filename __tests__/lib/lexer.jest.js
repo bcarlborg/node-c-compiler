@@ -129,10 +129,15 @@ describe('lexer', () => {
       })
     })
 
-    describe('comments', () => {
-      test('a comment produces no tokens', () => {
+    describe('single line comments', () => {
+      test('a comment alone produces no tokens', () => {
         const result = lex('// foobar baz bop')
         expect(result).toEqual([])
+      })
+
+      test('a comment produces no tokens', () => {
+        const result = lex('int // foobar baz bop')
+        expect(result).toEqual([{ type: TOKEN_TYPE.INT }])
       })
 
       test('regular parsing resumes after new line', () => {
@@ -152,6 +157,11 @@ describe('lexer', () => {
             type: TOKEN_TYPE.CLOSE_PAREN,
           },
         ])
+      })
+
+      test('a comment with no content can parse', () => {
+        const result = lex('//\nint')
+        expect(result).toEqual([{ type: TOKEN_TYPE.INT }])
       })
 
       test('parses a line that ends in a comment', () => {
@@ -176,6 +186,26 @@ describe('lexer', () => {
           {
             type: TOKEN_TYPE.CLOSE_BRACE,
           },
+        ])
+      })
+    })
+
+    describe('multi line comments', () => {
+      test('produces no tokens if alone', () => {
+        const result = lex('/* foobar baz bop */')
+        expect(result).toEqual([])
+      })
+
+      test('produces no tokens if allone on multiple lines', () => {
+        const result = lex('/* foobar \n\nbaz \nbop */')
+        expect(result).toEqual([])
+      })
+
+      test('tokens can be recognized before and after', () => {
+        const result = lex('int /* foobar \n\nbaz \nbop */ void')
+        expect(result).toEqual([
+          { type: TOKEN_TYPE.INT },
+          { type: TOKEN_TYPE.VOID },
         ])
       })
     })
