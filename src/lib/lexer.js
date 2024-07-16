@@ -224,9 +224,7 @@ function lex(src) {
     const manyCharTokenTypeWithLength = peekMultiCharTokenType()
     if (
       manyCharTokenTypeWithLength &&
-      !isIdentifierInnerCharacter(
-        peekChar(manyCharTokenTypeWithLength.length + 1),
-      )
+      !isIdentifierInnerCharacter(peekChar(manyCharTokenTypeWithLength.length))
     ) {
       tokens.push({
         type: manyCharTokenTypeWithLength.type,

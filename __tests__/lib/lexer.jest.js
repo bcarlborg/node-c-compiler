@@ -181,6 +181,29 @@ describe('lexer', () => {
           },
         ])
       })
+
+      test('identifies simple function declaration', () => {
+        const result = lex('int main() {}')
+        expect(result).toEqual([
+          { type: TOKEN_TYPE.INT },
+          {
+            type: TOKEN_TYPE.IDENTIFIER,
+            name: 'main',
+          },
+          {
+            type: TOKEN_TYPE.OPEN_PAREN,
+          },
+          {
+            type: TOKEN_TYPE.CLOSE_PAREN,
+          },
+          {
+            type: TOKEN_TYPE.OPEN_BRACE,
+          },
+          {
+            type: TOKEN_TYPE.CLOSE_BRACE,
+          },
+        ])
+      })
     })
 
     describe('throws unknown token type for an unrecognizable token', () => {
