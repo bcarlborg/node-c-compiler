@@ -1,12 +1,12 @@
 const fs = require('fs')
 
 const file_utils = require('../../src/lib/file_utils')
+
 const {
   readFileText,
   EXPECTED_PATH_ARGUMENT_MESSAGE,
   FILE_DOES_NOT_EXIST,
   CANNOT_READ_FILE,
-  EMPTY_FILE,
 } = file_utils
 
 describe('readFileText', () => {

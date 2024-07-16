@@ -1,5 +1,6 @@
 const fs = require('fs')
-const path = require('path')
+
+const { FatalError } = require('./errors')
 
 const EXPECTED_PATH_ARGUMENT_MESSAGE = 'error: expected path to be a string'
 const FILE_DOES_NOT_EXIST = 'error: file does not exist'
@@ -8,22 +9,22 @@ const EMPTY_FILE = 'error: empty file'
 
 async function readFileText(path) {
   if (!(typeof path === 'string' || path instanceof String)) {
-    throw new Error(EXPECTED_PATH_ARGUMENT_MESSAGE)
+    throw new FatalError(EXPECTED_PATH_ARGUMENT_MESSAGE)
   }
 
   if (!fs.existsSync(path)) {
-    throw new Error(FILE_DOES_NOT_EXIST)
+    throw new FatalError(FILE_DOES_NOT_EXIST)
   }
 
   let fileText
   try {
     fileText = await fs.promises.readFile(path, 'utf8')
-  } catch (error) {
-    throw new Error(CANNOT_READ_FILE)
+  } catch (_error) {
+    throw new FatalError(CANNOT_READ_FILE)
   }
 
   if (!fileText) {
-    throw new Error(EMPTY_FILE)
+    new FatalError(EMPTY_FILE)
   }
 
   return fileText

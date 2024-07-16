@@ -1,7 +1,9 @@
+const { FatalError } = require('./errors')
+
 const NO_ARGUMENTS_ERROR_MESSAGE =
-  'SCRIPT ERROR: expected positional argument with path to file'
+  'Lexer Error: expected positional argument with path to file'
 const EXPECTED_ARRAY_ARGS_MESSAGE =
-  'internal error: expected argument args to be an array'
+  'Lexer Error: expected argument args to be an array'
 
 /**
  * Processes the command line arguments passed to the compile script.
@@ -17,7 +19,7 @@ const EXPECTED_ARRAY_ARGS_MESSAGE =
  */
 function extractCliArgsAndOptions(args) {
   if (!Array.isArray(args)) {
-    throw new Error(EXPECTED_ARRAY_ARGS_MESSAGE)
+    throw new FatalError(EXPECTED_ARRAY_ARGS_MESSAGE)
   }
 
   // The first two arguments are 'node' and the path to our script.
@@ -25,7 +27,7 @@ function extractCliArgsAndOptions(args) {
   const optionsAndArgs = args.slice(2)
 
   if (!optionsAndArgs.length) {
-    throw new Error(NO_ARGUMENTS_ERROR_MESSAGE)
+    throw new FatalError(NO_ARGUMENTS_ERROR_MESSAGE)
   }
 
   const foundOptions = {
@@ -92,7 +94,7 @@ function extractCliArgsAndOptions(args) {
   // if after shifting all the options off, there is nothing left
   // then there are no arguments
   if (optionsAndArgs.length === 0) {
-    throw new Error(NO_ARGUMENTS_ERROR_MESSAGE)
+    throw new FatalError(NO_ARGUMENTS_ERROR_MESSAGE)
   }
 
   const positionalArg = optionsAndArgs[0]

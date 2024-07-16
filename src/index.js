@@ -1,6 +1,15 @@
 const { extractCliArgsAndOptions } = require('./lib/cli_args')
+const { logError } = require('./lib/errors')
 const { readFileText } = require('./lib/file_utils')
 const { lex, tokensToString } = require('./lib/lexer')
+
+async function mainWithLogging() {
+  try {
+    await main()
+  } catch (error) {
+    logError(error)
+  }
+}
 
 async function main() {
   const argAndOptions = extractCliArgsAndOptions(process.argv)
@@ -34,4 +43,4 @@ async function main() {
   }
 }
 
-main()
+mainWithLogging()

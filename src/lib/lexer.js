@@ -1,3 +1,5 @@
+const { FatalError } = require('./errors')
+
 const TOKEN_TYPE = {
   OPEN_PAREN: 'open_paren',
   CLOSE_PAREN: 'close_paren',
@@ -46,7 +48,7 @@ function lex(src) {
 
   function peekString(n) {
     if (!n) {
-      throw new Error('peek string requires an argument n')
+      throw new FatalError('peek string requires an argument n')
     }
 
     if (current_index + n < src.length) {
@@ -58,7 +60,7 @@ function lex(src) {
 
   function munch(n) {
     if (!n) {
-      throw new Error('Munch Expects an index')
+      throw new FatalError('Munch Expects an index')
     }
 
     const substring = src.slice(current_index, current_index + n)
@@ -270,7 +272,7 @@ function lex(src) {
       continue
     }
 
-    throw new Error(UNRECOGNIZABLE_TOKEN_MESSAGE, { cause: peekChar() })
+    throw new FatalError(UNRECOGNIZABLE_TOKEN_MESSAGE, { cause: peekChar() })
   }
 
   return tokens
@@ -278,7 +280,7 @@ function lex(src) {
 
 function tokensToString(tokens) {
   if (!tokens) {
-    throw new Error(EXPECTED_TOKENS_MESSAGE)
+    throw new FatalError(EXPECTED_TOKENS_MESSAGE)
   }
 
   const strings = tokens.map((token) => {

@@ -22,6 +22,7 @@ export default [
           reportUsedIgnorePattern: false,
           varsIgnorePattern: '_.*',
           argsIgnorePattern: '_.*',
+          caughtErrorsIgnorePattern: '_.*',
         },
       ],
     },

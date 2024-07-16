@@ -1,15 +1,10 @@
 # TODOS
 
-**CLI Argument parser updates**
+**Project Updates**
 
-- update the CLI parser to allow multiple options, but specify that they override each other
-- have the CLI parser shift options off one by one
-- have the output reflect the overrides
-- add a debug option
-
-**Lexer**
-
-- add a pretty printer for tokens
+- create a global error logging object and a global printing object
+- update error cases to use new logging object
+- add help text to the program with a help option
 
 **Driver**
 
