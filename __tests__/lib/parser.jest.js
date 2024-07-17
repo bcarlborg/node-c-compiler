@@ -87,6 +87,16 @@ describe('parser tests', () => {
           new ParseError(ERROR_MESSAGES.FUNCTION_EXPECTED_NAME_IDENTIFIER),
         )
       })
+
+      it('throws an error if there is junk after the function', () => {
+        const tokens = [...VALID_FUNCTION_TOKENS]
+        // add junk at the end of the parse
+        tokens.push([{ type: TOKEN_TYPE.IDENTIFIER, constant: 'foo' }])
+
+        expect(() => parse(tokens)).toThrow(
+          new ParseError(ERROR_MESSAGES.PROGRAM_TRAILING_JUNK),
+        )
+      })
     })
   })
 

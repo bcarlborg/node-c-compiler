@@ -15,6 +15,8 @@ const NODE_TYPE = {
 }
 
 const ERROR_MESSAGES = {
+  PROGRAM_TRAILING_JUNK:
+    'Cannot parse program -- found junk that could not be parsed to top level declaration',
   FUNCTION_EXPECTED_RETURN_TYPE:
     'Cannot parse function -- expected valid return type',
   FUNCTION_EXPECTED_NAME_IDENTIFIER:
@@ -104,6 +106,11 @@ function parse(tokens) {
     }
 
     const parsedFunction = parseFunction()
+
+    if (current_token_index < tokens.length) {
+      throw new ParseError(ERROR_MESSAGES.PROGRAM_TRAILING_JUNK)
+    }
+
     if (parsedFunction) {
       return {
         type: NODE_TYPE.PROGRAM,

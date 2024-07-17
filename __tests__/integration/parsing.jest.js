@@ -51,7 +51,7 @@ describe('parsing integration tests', () => {
     )
   })
 
-  test('exits with non-zero code and errors for invalid parse', async () => {
+  test('exits with non-zero code and errors for missing semicolon', async () => {
     const command =
       './compiler --parse ./__tests__/sample_c_files/invalid_programs/missing_semicolon.c'
 
@@ -64,6 +64,22 @@ describe('parsing integration tests', () => {
     expect(error.code > 0).toBe(true)
     expect(stderr).toContain(
       'Fatal Error: Parse Error: cannot parse return statement, expected semicolon',
+    )
+  })
+
+  test('exits with non-zero code and errors for extra junk at end of file', async () => {
+    const command =
+      './compiler --parse ./__tests__/sample_c_files/invalid_programs/extra_junk.c'
+
+    const { error, stderr } = await new Promise((resolve, _reject) => {
+      exec(command, (error, stdout, stderr) => {
+        resolve({ error, stdout, stderr })
+      })
+    })
+
+    expect(error.code > 0).toBe(true)
+    expect(stderr).toContain(
+      'Fatal Error: Parse Error: Cannot parse program -- found junk that could not be parsed to top level declaration',
     )
   })
 })
