@@ -1,7 +1,8 @@
 const { extractCliArgsAndOptions } = require('./lib/cli_args')
-const { logErrorAndExit } = require('./lib/errors')
+const { logErrorAndExit, FatalError } = require('./lib/errors')
 const { readFileText } = require('./lib/file_utils')
 const { lex, tokensToString } = require('./lib/lexer')
+const { parse, astToString } = require('./lib/parser')
 
 async function mainWithLogging() {
   try {
@@ -29,7 +30,12 @@ async function main() {
   // Lex the file text
   //
 
-  const tokens = lex(fileText)
+  let tokens
+  try {
+    tokens = lex(fileText)
+  } catch (error) {
+    throw new FatalError(error.message)
+  }
 
   if (argAndOptions?.debugOption) {
     const tokenString = tokensToString(tokens)
@@ -44,7 +50,27 @@ async function main() {
     return
   }
 
-  const concreteSyntaxTree = parse(tokens)
+  let ast
+
+  try {
+    ast = parse(tokens)
+  } catch (error) {
+    throw new FatalError(error.message)
+  }
+
+  if (argAndOptions?.debugOption) {
+    const astString = astToString(ast)
+    console.log('====== AST ======')
+    console.log(astString)
+    console.log()
+  }
+
+  //
+  // if the parse option was passed, we should exit after parsing
+  //
+  if (argAndOptions.parseOption) {
+    return
+  }
 }
 
 mainWithLogging()

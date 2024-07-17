@@ -3,7 +3,7 @@ const { TOKEN_TYPE } = require('./lexer')
 
 class ParseError extends Error {
   constructor(message) {
-    super('ParseError: ' + message)
+    super('Parse Error: ' + message)
   }
 }
 
@@ -31,7 +31,7 @@ const ERROR_MESSAGES = {
   RETURN_STATEMENT_EXPECTED_RETURN:
     'cannot parse return statement, expected return keyword',
   RETURN_STATEMENT_EXPECTED_SEMICOLON:
-    'cannot parse return statement, expected semi colon',
+    'cannot parse return statement, expected semicolon',
   CONSTANT_EXPECTED_CONSTANT:
     'cannot parse constant expression, expected constant',
 }
@@ -246,9 +246,7 @@ function parse(tokens) {
     //
 
     if (!expectTokenType(TOKEN_TYPE.SEMICOLON)) {
-      throw new ParseError(
-        'Parse error: cannot parse return statement, expected semi colon',
-      )
+      throw new ParseError(ERROR_MESSAGES.RETURN_STATEMENT_EXPECTED_SEMICOLON)
     }
     munchTokens(1)
 

@@ -1,11 +1,5 @@
 const lexer = require('../../src/lib/lexer')
-const {
-  lex,
-  tokensToString,
-  TOKEN_TYPE,
-  UNRECOGNIZABLE_TOKEN_MESSAGE,
-  EXPECTED_TOKENS_MESSAGE,
-} = lexer
+const { lex, tokensToString, LexError, TOKEN_TYPE, ERROR_MESSAGES } = lexer
 
 describe('lexer', () => {
   describe('lex', () => {
@@ -289,22 +283,30 @@ describe('lexer', () => {
 
     describe('throws unknown token type for an unrecognizable token', () => {
       test('throws for junk symbol', () => {
-        expect(() => lex('#')).toThrow(UNRECOGNIZABLE_TOKEN_MESSAGE)
+        expect(() => lex('#')).toThrow(
+          new LexError(ERROR_MESSAGES.UNRECOGNIZABLE_TOKEN_MESSAGE),
+        )
       })
 
       test('throws for junk at end of identifier', () => {
-        expect(() => lex('foobar#')).toThrow(UNRECOGNIZABLE_TOKEN_MESSAGE)
+        expect(() => lex('foobar#')).toThrow(
+          new LexError(ERROR_MESSAGES.UNRECOGNIZABLE_TOKEN_MESSAGE),
+        )
       })
 
       test('throws for junk identifier', () => {
-        expect(() => lex('9a')).toThrow(UNRECOGNIZABLE_TOKEN_MESSAGE)
+        expect(() => lex('9a')).toThrow(
+          new LexError(ERROR_MESSAGES.UNRECOGNIZABLE_TOKEN_MESSAGE),
+        )
       })
     })
   })
 
   describe('tokensToString', () => {
     test('throws an error if tokens is undefined', () => {
-      expect(() => tokensToString()).toThrow(EXPECTED_TOKENS_MESSAGE)
+      expect(() => tokensToString()).toThrow(
+        ERROR_MESSAGES.EXPECTED_TOKENS_MESSAGE,
+      )
     })
 
     test('returns an empty string for an empty array of tokens', () => {

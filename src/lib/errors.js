@@ -21,6 +21,7 @@ function logErrorAndExit(error) {
   console.error(
     '=======================================================================================',
   )
+  console.error()
 
   if (isFatal) {
     process.exit(1)

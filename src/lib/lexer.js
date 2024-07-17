@@ -1,4 +1,8 @@
-const { FatalError } = require('./errors')
+class LexError extends Error {
+  constructor(message) {
+    super('Lex Error: ' + message)
+  }
+}
 
 const TOKEN_TYPE = {
   OPEN_PAREN: 'open_paren',
@@ -20,8 +24,10 @@ const TOKEN_TYPE = {
   IDENTIFIER: 'identifier',
 }
 
-const UNRECOGNIZABLE_TOKEN_MESSAGE = 'error: unrecognizable token'
-const EXPECTED_TOKENS_MESSAGE = 'error: expected tokens'
+const ERROR_MESSAGES = {
+  UNRECOGNIZABLE_TOKEN_MESSAGE: 'unrecognizable token',
+  EXPECTED_TOKENS_MESSAGE: 'expected tokens',
+}
 
 function lex(src) {
   const tokens = []
@@ -48,7 +54,7 @@ function lex(src) {
 
   function peekString(n) {
     if (!n) {
-      throw new FatalError('peek string requires an argument n')
+      throw new LexError('peek string requires an argument n')
     }
 
     if (current_index + n < src.length) {
@@ -63,7 +69,7 @@ function lex(src) {
    */
   function munch(n) {
     if (!n) {
-      throw new FatalError('Munch Expects an integer')
+      throw new LexError('Munch Expects an integer')
     }
 
     const substring = src.slice(current_index, current_index + n)
@@ -310,7 +316,9 @@ function lex(src) {
       continue
     }
 
-    throw new FatalError(UNRECOGNIZABLE_TOKEN_MESSAGE, { cause: peekChar() })
+    throw new LexError(ERROR_MESSAGES.UNRECOGNIZABLE_TOKEN_MESSAGE, {
+      cause: peekChar(),
+    })
   }
 
   return tokens
@@ -318,7 +326,7 @@ function lex(src) {
 
 function tokensToString(tokens) {
   if (!tokens) {
-    throw new FatalError(EXPECTED_TOKENS_MESSAGE)
+    throw new LexError(ERROR_MESSAGES.EXPECTED_TOKENS_MESSAGE)
   }
 
   const strings = tokens.map((token) => {
@@ -338,6 +346,6 @@ module.exports = {
   lex,
   tokensToString,
   TOKEN_TYPE,
-  UNRECOGNIZABLE_TOKEN_MESSAGE,
-  EXPECTED_TOKENS_MESSAGE,
+  LexError,
+  ERROR_MESSAGES,
 }
