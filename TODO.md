@@ -1,12 +1,6 @@
 # TODOS
 
-**Project Updates**
+_This file is where I keep a loose list of the features I want to implement._
 
-- create a global error logging object and a global printing object
-- update error cases to use new logging object
-- add help text to the program with a help option
-
-**Driver**
-
-- add an integration test for the program
-  - test lexer with and without debug
+- figure out how I want to represent my concrete syntax tree as well as my abstract syntax tree for the compiler
+- How do I want to pretty print the two as well

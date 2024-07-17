@@ -37,10 +37,14 @@ async function main() {
     console.log(tokenString)
   }
 
+  //
   // if lex option was passed, we should exit after lexing
+  //
   if (argAndOptions.lexOption) {
     return
   }
+
+  const concreteSyntaxTree = parse(tokens)
 }
 
 mainWithLogging()
