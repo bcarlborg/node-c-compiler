@@ -2,7 +2,7 @@ const { TOKEN_TYPE } = require('./lexer')
 
 class ParseError extends Error {
   constructor(message) {
-    super(message)
+    super('ParseError: ' + message)
   }
 }
 
@@ -11,6 +11,28 @@ const NODE_TYPE = {
   FUNCTION_DECLARATION: 'function_declaration',
   RETURN_STATEMENT: 'return_statement',
   CONSTANT_EXPRESSION: 'constant_expression',
+}
+
+const ERROR_MESSAGES = {
+  FUNCTION_EXPECTED_RETURN_TYPE:
+    'Cannot parse function -- expected valid return type',
+  FUNCTION_EXPECTED_NAME_IDENTIFIER:
+    'Parse error: cannot parse function, expected function name identifier token',
+  FUNCTION_EXPECTED_OPEN_PAREN:
+    'cannot parse function, expected ( after function name',
+  FUNCTION_EXPECTED_ARGUMENTS: 'cannot parse function, expected arguments',
+  FUNCTION_EXPECTED_CLOSE_PAREN:
+    'cannot parse function, expected close paren after args',
+  FUNCTION_EXPECTED_OPEN_BRACE:
+    'cannot parse function, expected open brace to start function body',
+  FUNCTION_EXPECTED_CLOSE_BRACE:
+    'cannot parse function, closing brace after function body',
+  RETURN_STATEMENT_EXPECTED_RETURN:
+    'cannot parse return statement, expected return keyword',
+  RETURN_STATEMENT_EXPECTED_SEMICOLON:
+    'cannot parse return statement, expected semi colon',
+  CONSTANT_EXPECTED_CONSTANT:
+    'cannot parse constant expression, expected constant',
 }
 
 function parse(tokens) {
@@ -112,9 +134,7 @@ function parse(tokens) {
     //
 
     if (!expectTokenType(TOKEN_TYPE.INT)) {
-      throw new ParseError(
-        'Parse error: cannot parse function, expected valid return type',
-      )
+      throw new ParseError(ERROR_MESSAGES.FUNCTION_EXPECTED_RETURN_TYPE)
     }
     const returnTypeToken = munchTokens(1)[0]
 
@@ -123,9 +143,7 @@ function parse(tokens) {
     //
 
     if (!expectTokenType(TOKEN_TYPE.IDENTIFIER)) {
-      throw new ParseError(
-        'Parse error: cannot parse function, expected function name identifier token',
-      )
+      throw new ParseError(ERROR_MESSAGES.FUNCTION_EXPECTED_NAME_IDENTIFIER)
     }
     const functionNameToken = munchTokens(1)[0]
 
@@ -134,9 +152,7 @@ function parse(tokens) {
     //
 
     if (!expectTokenType(TOKEN_TYPE.OPEN_PAREN)) {
-      throw new ParseError(
-        'Parse error: cannot parse function, expected ( after function name',
-      )
+      throw new ParseError(ERROR_MESSAGES.FUNCTION_EXPECTED_OPEN_PAREN)
     }
     munchTokens(1)
 
@@ -145,9 +161,7 @@ function parse(tokens) {
     //
 
     if (!expectTokenType(TOKEN_TYPE.VOID)) {
-      throw new ParseError(
-        'Parse error: cannot parse function, expected arguments',
-      )
+      throw new ParseError(ERROR_MESSAGES.FUNCTION_EXPECTED_ARGUMENTS)
     }
 
     const argsToken = munchTokens(1)[0]
@@ -157,9 +171,7 @@ function parse(tokens) {
     //
 
     if (!expectTokenType(TOKEN_TYPE.CLOSE_PAREN)) {
-      throw new ParseError(
-        'Parse error: cannot parse function, expected close paren after args',
-      )
+      throw new ParseError(ERROR_MESSAGES.FUNCTION_EXPECTED_CLOSE_PAREN)
     }
     munchTokens(1)
 
@@ -168,9 +180,7 @@ function parse(tokens) {
     //
 
     if (!expectTokenType(TOKEN_TYPE.OPEN_BRACE)) {
-      throw new ParseError(
-        'Parse error: cannot parse function, expected open brace to start function body',
-      )
+      throw new ParseError(ERROR_MESSAGES.FUNCTION_EXPECTED_OPEN_BRACE)
     }
     munchTokens(1)
 
@@ -187,9 +197,7 @@ function parse(tokens) {
     //
 
     if (!expectTokenType(TOKEN_TYPE.CLOSE_BRACE)) {
-      throw new ParseError(
-        'Parse error: cannot parse function, closing brace after function body',
-      )
+      throw new ParseError(ERROR_MESSAGES.FUNCTION_EXPECTED_CLOSE_BRACE)
     }
     munchTokens(1)
 
@@ -222,9 +230,7 @@ function parse(tokens) {
     //
 
     if (!expectTokenType(TOKEN_TYPE.RETURN)) {
-      throw new ParseError(
-        'Parse error: cannot parse return statement, expected return keyword',
-      )
+      throw new ParseError(ERROR_MESSAGES.RETURN_STATEMENT_EXPECTED_RETURN)
     }
     munchTokens(1)
 
@@ -271,9 +277,7 @@ function parse(tokens) {
     //
 
     if (!expectTokenType(TOKEN_TYPE.CONSTANT)) {
-      throw new ParseError(
-        'Parse error: cannot parse constant expression, expected constant',
-      )
+      throw new ParseError(ERROR_MESSAGES.CONSTANT_EXPECTED_CONSTANT)
     }
 
     const constantToken = munchTokens(1)[0]
@@ -290,4 +294,6 @@ function parse(tokens) {
 module.exports = {
   parse,
   NODE_TYPE,
+  ParseError,
+  ERROR_MESSAGES,
 }
