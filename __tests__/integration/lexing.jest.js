@@ -2,7 +2,8 @@ const { exec } = require('child_process')
 
 describe('lexing integration tests', () => {
   test('exits with zero exit code for simple c file', async () => {
-    const command = './compiler --lex ./__tests__/sample_c_files/simple_main.c'
+    const command =
+      './compiler --lex ./__tests__/sample_c_files/valid_programs/simple_main.c'
 
     const { error, stderr } = await new Promise((resolve, _reject) => {
       exec(command, (error, stdout, stderr) => {
@@ -17,7 +18,7 @@ describe('lexing integration tests', () => {
 
   test('prints tokens for simpl c program when --debug is used', async () => {
     const command =
-      './compiler --lex --debug ./__tests__/sample_c_files/simple_main.c'
+      './compiler --lex --debug ./__tests__/sample_c_files/valid_programs/simple_main.c'
 
     const { error, stdout, stderr } = await new Promise((resolve, _reject) => {
       exec(command, (error, stdout, stderr) => {
@@ -37,7 +38,7 @@ describe('lexing integration tests', () => {
 
   test('exits with non-zero code and errors for invalid tokens', async () => {
     const command =
-      './compiler --lex ./__tests__/sample_c_files/invalid_tokens_main.c'
+      './compiler --lex ./__tests__/sample_c_files/invalid_programs/invalid_tokens_main.c'
 
     const { error, stderr } = await new Promise((resolve, _reject) => {
       exec(command, (error, stdout, stderr) => {

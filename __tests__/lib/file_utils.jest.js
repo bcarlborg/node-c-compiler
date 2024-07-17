@@ -39,12 +39,14 @@ describe('readFileText', () => {
     readFileSpy.mockRejectedValue(new Error('error'))
 
     await expect(
-      readFileText('./__tests__/sample_c_files/simple_main.c'),
+      readFileText('./__tests__/sample_c_files/valid_programs/simple_main.c'),
     ).rejects.toThrow(CANNOT_READ_FILE)
   })
 
   test('returns file text for existing file', async () => {
-    const text = await readFileText('./__tests__/sample_c_files/simple_main.c')
+    const text = await readFileText(
+      './__tests__/sample_c_files/valid_programs/simple_main.c',
+    )
     expect(text).toEqual('int main(void) {\n  return 2;\n}')
   })
 })

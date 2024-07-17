@@ -219,7 +219,6 @@ function lex(src) {
         runner += 1
       }
 
-      console.log('testy', current_index, runner)
       munch(runner + 2)
       continue
     }

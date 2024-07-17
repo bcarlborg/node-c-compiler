@@ -3,7 +3,7 @@ const { exec } = require('child_process')
 describe('parsing integration tests', () => {
   test('exits with zero exit code for simple c file', async () => {
     const command =
-      './compiler --parse ./__tests__/sample_c_files/simple_main.c'
+      './compiler --parse ./__tests__/sample_c_files/valid_programs/simple_main.c'
 
     const { error, stderr } = await new Promise((resolve, _reject) => {
       exec(command, (error, stdout, stderr) => {
@@ -18,7 +18,7 @@ describe('parsing integration tests', () => {
 
   test('prints ast for simple c program when --debug is used', async () => {
     const command =
-      './compiler --parse --debug ./__tests__/sample_c_files/simple_main.c'
+      './compiler --parse --debug ./__tests__/sample_c_files/valid_programs/simple_main.c'
 
     const { error, stdout, stderr } = await new Promise((resolve, _reject) => {
       exec(command, (error, stdout, stderr) => {
@@ -53,7 +53,7 @@ describe('parsing integration tests', () => {
 
   test('exits with non-zero code and errors for invalid parse', async () => {
     const command =
-      './compiler --parse ./__tests__/sample_c_files/missing_semicolon.c'
+      './compiler --parse ./__tests__/sample_c_files/invalid_programs/missing_semicolon.c'
 
     const { error, stderr } = await new Promise((resolve, _reject) => {
       exec(command, (error, stdout, stderr) => {

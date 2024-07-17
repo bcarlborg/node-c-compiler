@@ -31,7 +31,8 @@ describe('command line argument behavior', () => {
   })
 
   test('exits with zero exit code for simple c file', async () => {
-    const command = './compiler ./__tests__/sample_c_files/simple_main.c'
+    const command =
+      './compiler ./__tests__/sample_c_files/valid_programs/simple_main.c'
 
     const { error, stderr } = await new Promise((resolve, _reject) => {
       exec(command, (error, stdout, stderr) => {
