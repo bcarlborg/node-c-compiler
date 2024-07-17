@@ -1,6 +1,41 @@
 const { TOKEN_TYPE } = require('../../src/lib/lexer')
 const parser = require('../../src/lib/parser')
-const { parse, NODE_TYPE, ParseError, ERROR_MESSAGES } = parser
+const { parse, astToString, ParseError, NODE_TYPE, ERROR_MESSAGES } = parser
+
+const VALID_FUNCTION_TOKENS = [
+  {
+    type: TOKEN_TYPE.INT,
+  },
+  {
+    type: TOKEN_TYPE.IDENTIFIER,
+    name: 'my_function',
+  },
+  {
+    type: TOKEN_TYPE.OPEN_PAREN,
+  },
+  {
+    type: TOKEN_TYPE.VOID,
+  },
+  {
+    type: TOKEN_TYPE.CLOSE_PAREN,
+  },
+  {
+    type: TOKEN_TYPE.OPEN_BRACE,
+  },
+  {
+    type: TOKEN_TYPE.RETURN,
+  },
+  {
+    type: TOKEN_TYPE.CONSTANT,
+    constant: '999',
+  },
+  {
+    type: TOKEN_TYPE.SEMICOLON,
+  },
+  {
+    type: TOKEN_TYPE.CLOSE_BRACE,
+  },
+]
 
 describe('parser tests', () => {
   describe('parse()', () => {
@@ -11,47 +46,8 @@ describe('parser tests', () => {
     })
 
     describe('function parsing', () => {
-      let valid_function_tokens
-
-      beforeEach(() => {
-        valid_function_tokens = [
-          {
-            type: TOKEN_TYPE.INT,
-          },
-          {
-            type: TOKEN_TYPE.IDENTIFIER,
-            name: 'my_function',
-          },
-          {
-            type: TOKEN_TYPE.OPEN_PAREN,
-          },
-          {
-            type: TOKEN_TYPE.VOID,
-          },
-          {
-            type: TOKEN_TYPE.CLOSE_PAREN,
-          },
-          {
-            type: TOKEN_TYPE.OPEN_BRACE,
-          },
-          {
-            type: TOKEN_TYPE.RETURN,
-          },
-          {
-            type: TOKEN_TYPE.CONSTANT,
-            constant: '999',
-          },
-          {
-            type: TOKEN_TYPE.SEMICOLON,
-          },
-          {
-            type: TOKEN_TYPE.CLOSE_BRACE,
-          },
-        ]
-      })
-
       it('parses a simple function', () => {
-        const tokens = [...valid_function_tokens]
+        const tokens = [...VALID_FUNCTION_TOKENS]
         const result = parse(tokens)
 
         expect(result).toEqual({
@@ -74,7 +70,7 @@ describe('parser tests', () => {
 
       it('throws an error if the function has no return type', () => {
         // remove the return type token from valid tokens
-        const tokens = [...valid_function_tokens]
+        const tokens = [...VALID_FUNCTION_TOKENS]
         tokens.splice(0, 1)
 
         expect(() => parse(tokens)).toThrow(
@@ -83,7 +79,7 @@ describe('parser tests', () => {
       })
 
       it('throws an error if there is no function name', () => {
-        const tokens = [...valid_function_tokens]
+        const tokens = [...VALID_FUNCTION_TOKENS]
         // remove function name from tokens
         tokens.splice(1, 1)
 
@@ -91,6 +87,26 @@ describe('parser tests', () => {
           new ParseError(ERROR_MESSAGES.FUNCTION_EXPECTED_NAME_IDENTIFIER),
         )
       })
+    })
+  })
+
+  describe('print AST', () => {
+    it('prints a valid function', () => {
+      const ast = parse([...VALID_FUNCTION_TOKENS])
+      const result = astToString(ast)
+
+      expect(result).toEqual(
+        'Program(\n' +
+          '  FunctionDeclaration(\n' +
+          '    returnType: int\n' +
+          '    functionName: my_function\n' +
+          '    args: void\n' +
+          '    ReturnStatement(\n' +
+          '      Constant([object Object])\n' +
+          '    )\n' +
+          '  )\n' +
+          ')\n',
+      )
     })
   })
 })

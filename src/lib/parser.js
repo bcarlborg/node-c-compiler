@@ -1,3 +1,4 @@
+const { FatalError } = require('./errors')
 const { TOKEN_TYPE } = require('./lexer')
 
 class ParseError extends Error {
@@ -291,8 +292,110 @@ function parse(tokens) {
   return parseProgram()
 }
 
+function astToString(ast) {
+  function getWhitespaceForIndentLevel(indentLevel) {
+    let indentWhiteSpace = ''
+    for (let i = 0; i < indentLevel; i++) {
+      indentWhiteSpace += '  '
+    }
+    return indentWhiteSpace
+  }
+
+  function programNodeToString(node, indentLevel) {
+    if (node.type !== NODE_TYPE.PROGRAM) {
+      throw new FatalError(
+        `Cannot print PROGRAM ast node: unexpected type ${ast.type}`,
+      )
+    }
+
+    const indent = getWhitespaceForIndentLevel(indentLevel)
+
+    let str = ''
+    str += indent + 'Program(' + '\n'
+    str += printFunctionDeclarationNode(node.functionNode, indentLevel + 1)
+    str += indent + ')' + '\n'
+
+    return str
+  }
+
+  function printFunctionDeclarationNode(node, indentLevel) {
+    if (node.type !== NODE_TYPE.FUNCTION_DECLARATION) {
+      throw new FatalError(
+        `Cannot print FUNCTION_DECLARATION ast node: unexpected type ${ast.type}`,
+      )
+    }
+
+    const indent = getWhitespaceForIndentLevel(indentLevel)
+    const indentInner = getWhitespaceForIndentLevel(indentLevel + 1)
+
+    let str = ''
+    str += indent + 'FunctionDeclaration(' + '\n'
+    str += indentInner + 'returnType: ' + node.returnType.type + '\n'
+    str += indentInner + 'functionName: ' + node.functionName.name + '\n'
+    str += indentInner + 'args: ' + node.args.type + '\n'
+    str += statementToString(node.bodyStatement, indentLevel + 1)
+    str += indent + ')' + '\n'
+
+    return str
+  }
+
+  function statementToString(node, indentLevel) {
+    if (node.type === NODE_TYPE.RETURN_STATEMENT) {
+      return returnStatementToString(node, indentLevel)
+    }
+
+    throw new FatalError(
+      `Cannot print statement ast node: unexpected type ${ast.type}`,
+    )
+  }
+
+  function returnStatementToString(node, indentLevel) {
+    if (node.type !== NODE_TYPE.RETURN_STATEMENT) {
+      throw new FatalError(
+        `Cannot print RETURN_STATEMENT ast node: unexpected type ${ast.type}`,
+      )
+    }
+
+    const indent = getWhitespaceForIndentLevel(indentLevel)
+
+    let str = ''
+    str += indent + 'ReturnStatement(' + '\n'
+    str += expressionToString(node.expression, indentLevel + 1)
+    str += indent + ')' + '\n'
+
+    return str
+  }
+
+  function expressionToString(node, indentLevel) {
+    if (node.type === NODE_TYPE.CONSTANT_EXPRESSION) {
+      return constantExpressionToString(node, indentLevel)
+    }
+
+    throw new FatalError(
+      `Cannot print expression ast node: unexpected type ${ast.type}`,
+    )
+  }
+
+  function constantExpressionToString(node, indentLevel) {
+    if (node.type !== NODE_TYPE.CONSTANT_EXPRESSION) {
+      throw new FatalError(
+        `Cannot print CONSTANT_EXPRESSION ast node: unexpected type ${ast.type}`,
+      )
+    }
+
+    const indent = getWhitespaceForIndentLevel(indentLevel)
+
+    let str = ''
+    str += indent + 'Constant(' + node.constant + ')' + '\n'
+    return str
+  }
+
+  return programNodeToString(ast, 0)
+}
+
 module.exports = {
   parse,
+  astToString,
   NODE_TYPE,
   ParseError,
   ERROR_MESSAGES,
